@@ -15,7 +15,7 @@ Aevion provides cryptographic proof systems for AI verification:
      
       - ## Open Source
      
-      - **[aevion-sdk](https://github.com/Aevion-ai/aevion-sdk)** - Open-source SDKs for AI verification
+      - **[aevion-shield](https://github.com/Aevion-ai/aevion-sdk)** - Open-source SDKs for AI verification
      
       - ## About Us
      
