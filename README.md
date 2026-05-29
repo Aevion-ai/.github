@@ -9,7 +9,7 @@ Aevion builds the infrastructure that converts AI-generated outputs into determi
 | Repository | Description |
 |---|---|
 | [verifiable-agent-protocol](https://github.com/Aevion-ai/verifiable-agent-protocol) | Open standard for verifiable AI agent execution. Rust-native, Apache 2.0. |
-| [Aevion-Verifiable-AI](https://github.com/Aevion-ai/Aevion-Verifiable-AI) | Canonical proof-native kernel — Lean 4 proofs, Rust trust kernel, five-gate pipeline. |
+| [Aevion-Verifiable-AI](https://github.com/Aevion-ai/Aevion-Verifiable-AI) |— Lean 4 proofs, Rust trust kernel, five-gate pipeline. |
 | [aevion-sdk](https://github.com/Aevion-ai/aevion-sdk) | Python and JavaScript SDKs for cryptographic proof verification. MIT license. |
 | [xal-specification](https://github.com/Aevion-ai/xal-specification) | eXplainable Assembly Language specification — cryptographically verifiable AI execution format. |
 
@@ -20,6 +20,7 @@ Aevion builds the infrastructure that converts AI-generated outputs into determi
 - Ed25519 + SHA-256 receipt chain
 - Byzantine fault-tolerant consensus
 - Hardware attestation (Hailo-10H NPU, Raspberry Pi 5)
+- **QGOV-PREDICT-001 (May 29, 2026)*: Pre-outcome BFT governance features predict cross-provider error rates, p=0.010, hardware-only, 11 runs. [Receipt](https://github.com/Aevion-ai/Aevion-Verifiable-AI/tree/main/docs/evidence)
 
 ## Contact
 
