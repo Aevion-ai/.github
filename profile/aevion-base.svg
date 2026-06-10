@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    
+    <linearGradient id="brain-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a1628"></stop>
+      <stop offset="100%" style="stop-color:#1e3a5f"></stop>
+    </linearGradient>
+
+    
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"></feGaussianBlur>
+      <feMerge>
+        <feMergeNode in="coloredBlur"></feMergeNode>
+        <feMergeNode in="SourceGraphic"></feMergeNode>
+      </feMerge>
+    </filter>
+
+    
+    
+  </defs>
+
+  
+  
+
+  
+  <g id="brain" filter="url(#glow)">
+    
+    <path class="brain-outline" d="&#xA;      M 40,100&#xA;      C 40,60 55,40 75,35&#xA;      C 90,32 100,45 100,60&#xA;      C 100,45 110,32 125,35&#xA;      C 145,40 160,60 160,100&#xA;      C 160,140 145,160 125,165&#xA;      C 110,168 100,155 100,140&#xA;      C 100,155 90,168 75,165&#xA;      C 55,160 40,140 40,100&#xA;      Z&#xA;    "></path>
+
+    
+    <path class="circuit-path" stroke-width="1.5" d="&#xA;      M 55,80 Q 70,75 75,90&#xA;      M 60,100 Q 75,95 80,110&#xA;      M 55,120 Q 70,125 75,110&#xA;    "></path>
+  </g>
+
+  
+  <g id="circuit" filter="url(#glow)">
+    
+    <path class="circuit-path" d="M 100,70 L 130,70 L 130,50 L 160,50"></path>
+    <path class="circuit-path" d="M 100,100 L 140,100 L 140,100 L 170,100"></path>
+    <path class="circuit-path" d="M 100,130 L 130,130 L 130,150 L 160,150"></path>
+
+    
+    <path class="circuit-path" stroke-width="2" d="M 130,70 L 130,85"></path>
+    <path class="circuit-path" stroke-width="2" d="M 140,100 L 140,115"></path>
+
+    
+    <circle class="circuit-node" cx="160" cy="50" r="8"></circle>
+    <circle class="circuit-node-inner" cx="160" cy="50" r="4"></circle>
+
+    <circle class="circuit-node" cx="170" cy="100" r="8"></circle>
+    <circle class="circuit-node-inner" cx="170" cy="100" r="4"></circle>
+
+    <circle class="circuit-node" cx="160" cy="150" r="8"></circle>
+    <circle class="circuit-node-inner" cx="160" cy="150" r="4"></circle>
+
+    
+    <circle class="circuit-node" cx="130" cy="70" r="5"></circle>
+    <circle class="circuit-node" cx="130" cy="130" r="5"></circle>
+    <circle class="circuit-node" cx="140" cy="100" r="5"></circle>
+
+    
+    <circle class="circuit-node" cx="130" cy="85" r="3"></circle>
+    <circle class="circuit-node" cx="140" cy="115" r="3"></circle>
+  </g>
+
+</svg>

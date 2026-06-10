@@ -1,72 +1,84 @@
-# Aevion — Proof-Native AI Governance
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Aevion-ai/.github/main/profile/aevion-base.svg" alt="Aevion" height="48">
+</p>
 
-**Formal verification + cryptographic receipts for autonomous AI systems.**
+<p align="center">
+  <strong>Proof-native governance for autonomous AI systems.</strong><br>
+  <sub>Machine-checked invariants. Cryptographic receipts. Byzantine-resilient consensus.</sub>
+</p>
 
-[![ProofOS](https://img.shields.io/badge/ProofOS-v1.0.0-teal)](https://github.com/Aevion-ai/ProofOS)
-[![Paper](https://img.shields.io/badge/paper-arXiv%20ready-blue)](https://github.com/Aevion-ai/Aevion-Verifiable-AI/blob/main/docs/papers/proofos_architecture_arxiv_v1.pdf)
-[![HF Spaces](https://img.shields.io/badge/demo-HF%20Spaces-ff9d00)](https://huggingface.co/spaces/aevionai/proofos-receipt-chain)
-[![AIMO](https://img.shields.io/badge/AIMO-top%205.7%25%20worldwide-8A2BE2)](https://www.kaggle.com/competitions/ai-mathematical-olympiad-progress-prize-3)
-
----
-
-## What We Build
-
-Aevion builds the **governance layer for AI agents** — the formal, receipted, independently auditable infrastructure that sits beneath every AI product category. Not guardrails. Not classifiers. A proof-native control plane.
-
-- **Constitutional Halt Gate** — Lean 4 predicates block unsafe state transitions before they execute
-- **Receipt Chain** — SHA-256 content-addressed evidence ledger, append-only, independently verifiable
-- **Agent Counsel Colony** — Multi-agent adversarial review (Byzantine + SIFT + DiF) as standing red-team capability
-- **Open-Obligation Surface** — Machine-readable Gödel register of every unproven obligation (no confidence percentages)
+<p align="center">
+  <a href="https://github.com/Aevion-ai/ProofOS"><img src="https://img.shields.io/badge/ProofOS-v1.0.0-teal" alt="ProofOS"></a>
+  <a href="https://github.com/Aevion-ai/Aevion-Verifiable-AI/blob/main/docs/papers/proofos_architecture_arxiv_v1.pdf"><img src="https://img.shields.io/badge/paper-arXiv%20ready-blue" alt="Paper"></a>
+  <a href="https://huggingface.co/spaces/aevionai/proofos-receipt-chain"><img src="https://img.shields.io/badge/demo-HF%20Spaces-live-ff9d00" alt="HF Spaces"></a>
+  <a href="https://www.kaggle.com/competitions/ai-mathematical-olympiad-progress-prize-3"><img src="https://img.shields.io/badge/AIMO-top%205.7%25%20worldwide-8A2BE2" alt="AIMO"></a>
+  <a href="https://aevion.ai"><img src="https://img.shields.io/badge/aevion.ai-SDVOSB%20%7C%20CAGE%2015NV7-darkgreen" alt="SDVOSB"></a>
+</p>
 
 ---
 
-## Founder
+Aevion builds the **governance layer beneath AI products** — the formal, receipted, independently auditable infrastructure that sits between an agent's decision and the world it acts on. Not guardrails. Not classifiers. A **proof-native control plane**.
+
+### The Stack
+
+| Layer | What It Does | Built With |
+|-------|-------------|------------|
+| **Constitutional Halt Gate** | Blocks any state transition that fails a declared predicate | Lean 4 theorems, kernel-checked at runtime |
+| **Receipt Chain** | Every gating decision emits a SHA-256 content-addressed record | ProofDB, canonical JSON, append-only ledger |
+| **Agent Counsel Colony** | Multi-agent adversarial review as standing red-team capability | Byzantine + SIFT + DiF + Arbiter (7 agents) |
+| **Open-Obligation Surface** | Machine-readable Gödel register of every unproven obligation | Named, categorized, receipt-stamped — no confidence percentages |
+
+### The Thesis
+
+On June 9, 2026, NIST published a mathematical proof (Vassilev, *IEEE S&P*) that no finite guardrail set can be universally robust against adversarial AI. NIST's official guidance: transition to a **continuous-monitor-and-update** security model. The same day, Anthropic launched Fable 5 / Mythos 5 — same model, different access envelopes — and publicly stated universal jailbreak prevention is "likely impossible."
+
+Aevion's architecture was already built to this specification: **receipt chain** (continuous monitoring), **counsel colony** (proactive red-teaming), **halt gate + human escalation** (operational resilience). We do not claim to have defeated the impossibility theorem. We claim to have built the architecture the theorem says you need — and published the exact list of what remains unproven.
+
+---
+
+### Founder
 
 **Scott Leishman** — Founder & Principal Investigator
 
-- **M.S.** Aeronautics, Embry-Riddle Aeronautical University (2018)
-- **B.S.** Applied Science and Technology, Thomas Edison State University
-- **B.S.** Business Administration - Finance, Southern New Hampshire University (2023)
-- **B.S. in progress** — Information Technology (Cybersecurity), Arizona State University
-- **U.S. Navy** Air Traffic Controller (2003–2014), combat-zone deployment to Camp Lemonnier, Djibouti
-- **ORCID:** [0009-0009-5755-8594](https://orcid.org/0009-0009-5755-8594)
-- **LinkedIn:** [scott-leishman-aviation](https://www.linkedin.com/in/scott-leishman-aviation/)
+U.S. Navy Air Traffic Controller (2003–2014), combat-zone deployment to Camp Lemonnier, Djibouti. M.S. Aeronautics, Embry-Riddle Aeronautical University (2018). B.S. Applied Science and Technology, Thomas Edison State University. B.S. Business Administration - Finance, Southern New Hampshire University. B.S. in progress — Information Technology (Cybersecurity), Arizona State University.
 
-### Research
+**Research.** [*"Air Traffic Control Human Factors with Drones"*](https://unmannedac.blogspot.com/2019/10/final-capstone-project-unmanned.html) — M.S. Capstone, ERAU (2018), peer-reviewed for final grade. SHEL model + ANOVA quantitative analysis against NASA Ames simulation data. Tested the hypothesis that UAS incorporation significantly impacts controller performance. Covered workload measurement, NextGen technologies (ADS-B, UTM, LATAS, LAANC), and loss-of-separation risk thresholds under BLOS automation — direct intellectual precursor to Aevion's Koopman ρ threshold derivation for autonomous system drift detection.
 
-**"Air Traffic Control Human Factors with Drones"** — M.S. Capstone, Embry-Riddle Aeronautical University (2018). Peer-reviewed for final grade. Applied the SHEL model with ANOVA quantitative analysis against NASA Ames simulation data to test the hypothesis that UAS incorporation significantly impacts air traffic controller performance. Covers workload measurement, NextGen technologies (ADS-B, UTM, LATAS, LAANC), and loss-of-separation risk thresholds under BLOS automation — direct intellectual precursor to Aevion's Koopman rho threshold derivation for autonomous system drift detection.
+Additional graduate research (2015–2019): ScanEagle risk assessment (MIL-STD-8820), BLOS operations and SATCOM human factors, GCS automation and skill retention, detect-and-avoid separation technologies. Full archive: [unmannedac.blogspot.com](https://unmannedac.blogspot.com).
 
-Additional graduate research (2015–2019): ScanEagle risk assessment (MIL-STD-8820), BLOS operations and SATCOM human factors, UAS ground control station automation/skill retention, detect-and-avoid separation technologies. Full archive: [unmannedac.blogspot.com](https://unmannedac.blogspot.com)
-
-Operational aviation safety discipline — where traceability, command authority, and zero-failure operating discipline are mission-critical — now formalized as machine-checked proof obligations for autonomous AI systems.
+> Operational aviation safety discipline — where traceability, command authority, and zero-failure operating discipline are mission-critical — now formalized as machine-checked proof obligations for autonomous AI systems.
 
 ---
 
-## Key Repositories
+### Repositories
 
-| Repo | Description |
-|------|-------------|
-| [ProofOS](https://github.com/Aevion-ai/ProofOS) | Public distribution — constitutional halt gate, receipt chain, ModelAccessEnvelope, paper |
-| [Aevion-Verifiable-AI](https://github.com/Aevion-ai/Aevion-Verifiable-AI) | Full corpus (private) — 1,283 Lean 4 theorems, ProofDB, QKL lattice, EvidenceBench |
-
----
-
-## Competitive Validation
-
-- **AIMO (Kaggle AI Mathematical Olympiad):** Top 5.7% worldwide (235/4,138)
-- **EvidenceBench-ArXiv:** 10 papers, 22 claims, all PRIMARY_CONFIRMED
-- **Lean Build Receipt Bridge:** lake build EXIT=0, source authority chain to PROOF_LEVEL
+| Repo | Audience | Content |
+|------|----------|---------|
+| [**ProofOS**](https://github.com/Aevion-ai/ProofOS) | Public | Constitutional halt gate, receipt chain, ModelAccessEnvelope, paper, schemas |
+| [**Aevion-Verifiable-AI**](https://github.com/Aevion-ai/Aevion-Verifiable-AI) | Private | Full Lean 4 corpus (1,283 theorems), ProofDB, QKL lattice, EvidenceBench, Agent Counsel Colony |
 
 ---
 
-## Company
+### Competitive Validation
 
-- **Aevion LLC** — SDVOSB (Service-Disabled Veteran-Owned Small Business)
-- **CAGE:** 15NV7 | **UEI:** JFCXAGHB3QM6
-- **Location:** St. Cloud, MN
-- **NIST AI Consortium** applicant
-- **Contact:** scott@aevion.ai
+| Signal | Result | Date |
+|--------|--------|------|
+| Kaggle AIMO Progress Prize 3 | **Top 5.7% worldwide** (235 / 4,138) | 2026 |
+| EvidenceBench-ArXiv | 10 papers, 22 claims, all PRIMARY\_CONFIRMED | 2026 |
+| Lean Build Receipt Bridge | lake build EXIT=0, source authority chain → PROOF\_LEVEL | 2026 |
 
 ---
 
-*"Theorem where provable. Assumption where modeled. Hypothesis where empirical. Receipt where observed. Gate where safety-critical."*
+### Company
+
+**Aevion LLC** — Service-Disabled Veteran-Owned Small Business  
+CAGE: `15NV7` · UEI: `JFCXAGHB3QM6` · St. Cloud, MN  
+NIST AI Consortium applicant · SBIR/STTR eligible  
+**Contact:** [scott@aevion.ai](mailto:scott@aevion.ai) · [aevion.ai](https://aevion.ai)
+
+---
+
+<p align="center">
+  <em>Theorem where provable. Assumption where modeled. Hypothesis where empirical.<br>
+  Receipt where observed. Gate where safety-critical.</em>
+</p>
