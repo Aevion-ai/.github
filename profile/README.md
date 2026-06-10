@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Aevion-ai/.github/main/profile/aevion-base.svg" alt="Aevion" height="48">
+  <strong>Aevion</strong>
 </p>
 
 <p align="center">
