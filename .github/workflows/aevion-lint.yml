@@ -1,0 +1,180 @@
+name: aevion-lint
+
+on:
+  workflow_call:
+    inputs:
+      python-version:
+        description: 'Python version to use for Python lint jobs'
+        type: string
+        default: '3.12'
+      markdownlint-config:
+        description: 'Path to markdownlint config file'
+        type: string
+        default: '.markdownlint.json'
+
+jobs:
+  detect:
+    name: Detect file types
+    runs-on: ubuntu-latest
+    outputs:
+      python: ${{ steps.check.outputs.python }}
+      rust: ${{ steps.check.outputs.rust }}
+      markdown: ${{ steps.check.outputs.markdown }}
+      shell: ${{ steps.check.outputs.shell }}
+      yaml: ${{ steps.check.outputs.yaml }}
+      js: ${{ steps.check.outputs.js }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Detect languages
+        id: check
+        run: |
+          python_present=false
+          rust_present=false
+          markdown_present=false
+          shell_present=false
+          yaml_present=false
+          js_present=false
+
+          if find . -name '*.py' -print -quit | grep -q .; then python_present=true; fi
+          if [ -f Cargo.toml ]; then rust_present=true; fi
+          if find . -name '*.md' -print -quit | grep -q .; then markdown_present=true; fi
+          if find . -name '*.sh' -print -quit | grep -q .; then shell_present=true; fi
+          if find . \( -name '*.yml' -o -name '*.yaml' \) -print -quit | grep -q .; then yaml_present=true; fi
+          if [ -f package.json ] || find . \( -name '*.js' -o -name '*.ts' \) -print -quit | grep -q .; then js_present=true; fi
+
+          echo "python=$python_present" >> "$GITHUB_OUTPUT"
+          echo "rust=$rust_present" >> "$GITHUB_OUTPUT"
+          echo "markdown=$markdown_present" >> "$GITHUB_OUTPUT"
+          echo "shell=$shell_present" >> "$GITHUB_OUTPUT"
+          echo "yaml=$yaml_present" >> "$GITHUB_OUTPUT"
+          echo "js=$js_present" >> "$GITHUB_OUTPUT"
+
+  python-lint:
+    name: Python lint
+    needs: detect
+    if: needs.detect.outputs.python == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Set up Python
+        uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b # v5.3.0
+        with:
+          python-version: ${{ inputs.python-version }}
+      - name: Install tools
+        run: pip install ruff bandit
+      - name: Run ruff
+        run: ruff check .
+      - name: Run bandit
+        run: bandit -r . --skip B101
+
+  markdown-lint:
+    name: Markdown lint
+    needs: detect
+    if: needs.detect.outputs.markdown == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Set up Node
+        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
+        with:
+          node-version: '20'
+      - name: Install markdownlint-cli
+        run: npm install -g markdownlint-cli
+      - name: Run markdownlint
+        run: |
+          if [ -f "${{ inputs.markdownlint-config }}" ]; then
+            markdownlint '**/*.md' --config "${{ inputs.markdownlint-config }}"
+          else
+            markdownlint '**/*.md'
+          fi
+
+  shell-lint:
+    name: Shell lint
+    needs: detect
+    if: needs.detect.outputs.shell == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Install shellcheck
+        run: sudo apt-get update && sudo apt-get install -y shellcheck
+      - name: Run shellcheck
+        run: find . -name '*.sh' -print0 | xargs -0 shellcheck
+
+  yaml-lint:
+    name: YAML lint
+    needs: detect
+    if: needs.detect.outputs.yaml == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Install yamllint
+        run: pip install yamllint
+      - name: Run yamllint
+        run: |
+          if [ -f .yamllint ]; then
+            yamllint .
+          else
+            yamllint .
+          fi
+
+  rust-lint:
+    name: Rust lint
+    needs: detect
+    if: needs.detect.outputs.rust == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Set up Rust
+        uses: actions-rust-lang/setup-rust-toolchain@11df97af8e8102fd60b60a77dfbf58d40cd843b8 # v1.10.1
+        with:
+          components: rustfmt, clippy
+      - name: Check formatting
+        run: cargo fmt --check
+      - name: Run clippy
+        run: cargo clippy --all-targets -- -D warnings
+
+  js-lint:
+    name: JS/TS lint
+    needs: detect
+    if: needs.detect.outputs.js == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Set up Node
+        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
+        with:
+          node-version: '20'
+      - name: Check for ESLint config
+        id: eslint-config
+        run: |
+          if find . \( -name '.eslintrc*' -o -name 'eslint.config.*' \) -print -quit | grep -q .; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Run ESLint
+        if: steps.eslint-config.outputs.exists == 'true'
+        run: npx eslint . --ext .js,.jsx,.ts,.tsx
+
+  all-clear:
+    name: All lint jobs passed
+    needs:
+      - detect
+      - python-lint
+      - markdown-lint
+      - shell-lint
+      - yaml-lint
+      - rust-lint
+      - js-lint
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Report status
+        run: echo "All lint jobs passed"
