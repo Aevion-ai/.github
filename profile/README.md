@@ -1,4 +1,4 @@
-﻿<p align="center">
+<p align="center">
   <strong>Aevion</strong>
 </p>
 
@@ -86,4 +86,3 @@ NIST AI Consortium applicant ┬╖ SBIR/STTR eligible
   <em>Theorem where provable. Assumption where modeled. Hypothesis where empirical.<br>
   Receipt where observed. Gate where safety-critical.</em>
 </p>
-
