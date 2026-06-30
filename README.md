@@ -25,7 +25,7 @@ Aevion builds the infrastructure that converts AI-generated outputs into determi
 ## Contact
 
 - Website: [aevion.ai](https://aevion.ai)
-- Email: info@aevion.ai
+- Email: <info@aevion.ai>
 - SDVOSB (Service-Disabled Veteran-Owned Small Business)
 
 ---
