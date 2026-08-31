@@ -17,7 +17,52 @@
 
 ---
 
-Aevion builds the **governance layer beneath AI products** ΓÇö the formal, receipted, independently auditable infrastructure that sits between an agent's decision and the world it acts on. Not guardrails. Not classifiers. A **proof-native control plane**.
+Aevion builds the **governance layer beneath AI product# Aevion
+
+Aevion builds the governance layer beneath AI products — the formal, receipted, independently auditable infrastructure that sits between an agent's decision and the world it acts on as a proof-native control plane.
+
+## VetProof Lead Product
+**VetProof** is Aevion's lead product, formalizing operational aviation safety discipline — where traceability, command authority, and zero-failure operating discipline are mission-critical — into machine-checked proof obligations for autonomous AI systems.
+
+## ProofOS / Evidence Substrate
+**ProofOS** serves as the evidence substrate, implementing a four-layer control plane:
+* **Constitutional Halt Gate**: Blocks any state transition that fails a declared predicate using Lean 4 theorems checked at runtime.
+* **Receipt Chain**: Emits a SHA-256 content-addressed record to an append-only ledger (ProofDB, canonical JSON) for every gating decision.
+* **Agent Counsel Colony**: Multi-agent adversarial review as a standing red-team capability powered by a 7-agent Byzantine + SIFT + DiF + Arbiter consensus.
+* **Open-Obligation Surface**: A machine-readable Gödel register of every unproven obligation, categorized and receipt-stamped with no confidence percentages.
+
+## Public Proof / Evidence Links
+* [ProofOS Repository](https://github.com/Aevion-ai/ProofOS)
+* [Architecture Paper (arXiv ready)](https://github.com/Aevion-ai/Aevion-Verifiable-AI/blob/main/docs/papers/proofos_architecture_arxiv_v1.pdf)
+* [Receipt Chain Live Demo (Hugging Face Spaces)](https://huggingface.co/spaces/aevionai/proofos-receipt-chain)
+* [Kaggle AIMO Progress Prize 3](https://www.kaggle.com/competitions/ai-mathematical-olympiad-progress-prize-3)
+
+## Current Public Products / Surfaces
+**ProofOS** is currently the only public-facing artifact, serving as a governed mirror of an allow-listed subset pulled from the canonical internal monorepo (`Aevion-Verifiable-AI`). All other repositories under `Aevion-ai` are internal and private.
+
+## Open Source / Research
+* **Kaggle AIMO Progress Prize 3**: Top 5.7% worldwide (235 / 4,138) | 2026
+* **EvidenceBench-ArXiv**: 10 papers, 22 claims, all PRIMARY_CONFIRMED | 2026
+* **Lean Build Receipt Bridge**: lake build EXIT=0, source authority chain π PROOF_LEVEL | 2026
+* **Aviation Human Factors Research**: *"Air Traffic Control Human Factors with Drones"* (M.S. Capstone, ERAU, 2018). Tested the hypothesis that UAS incorporation significantly impacts controller performance, covering workload measurement, NextGen technologies (ADS-B, UTM, LATAS, LAANC), and loss-of-separation risk thresholds under BLOS automation. This work serves as the direct intellectual precursor to Aevion's Koopman threshold derivation for autonomous system drift detection.
+* **Additional Graduate Research (2015–2019):** ScanEagle risk assessment (MIL-STD-8820), BLOS operations and SATCOM human factors, GCS automation and skill retention, detect-and-avoid separation technologies. Full archive available at [unmannedac.blogspot.com](https://unmannedac.blogspot.com).
+
+## Founder / Company Contact
+* **Founder & Principal Investigator:** Scott Leishman
+  * Background: U.S. Navy Air Traffic Controller (2003–2014), combat-zone deployment to Camp Lemonnier, Djibouti.
+  * Education: M.S. Aeronautics (Embry-Riddle Aeronautical University, 2018); B.S. Applied Science and Technology (Thomas Edison State University); B.S. Business Administration - Finance (Southern New Hampshire University); B.S. in progress Information Technology (Cybersecurity) (Arizona State University).
+* **Company Profile:** Aevion LLC is a Service-Disabled Veteran-Owned Small Business (SDVOSB) based in St. Cloud, MN.
+  * Identifiers: CAGE `15NV7` | UEI `JFCXAGHB3QM6`
+  * Eligibility: NIST AI Consortium applicant | SBIR/STTR eligible
+* **Contact:** [scott@aevion.ai](mailto:scott@aevion.ai) | [aevion.ai](https://aevion.ai)
+
+## Explicit Claim Ceiling
+On June 9, 2026, NIST published a mathematical proof (Vassilev, *IEEE S&P*) demonstrating that no finite guardrail set can be universally robust against adversarial AI, recommending a transition to a continuous-monitor-and-update security model. Concurrently, Anthropic launched Fable 5 / Mythos 5 — same model, different access envelopes — and publicly stated universal jailbreak prevention is "likely impossible."
+
+Aevion does not claim to have defeated this impossibility theorem. We claim to have built the exact architecture the theorem specifies as necessary — and published the precise list of what remains unproven.
+
+> Theorem where provable. Assumption where modeled. Hypothesis where empirical.  
+> Receipt where observed. Gate where safety-critical.s** ΓÇö the formal, receipted, independently auditable infrastructure that sits between an agent's decision and the world it acts on. Not guardrails. Not classifiers. A **proof-native control plane**.
 
 ### The Stack
 
