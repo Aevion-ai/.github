@@ -1,0 +1,47 @@
+[
+  {
+    "name": "all_active_languages_succeed",
+    "results": {"detect": "success", "python-lint": "success", "markdown-lint": "success", "shell-lint": "success", "yaml-lint": "success", "rust-lint": "success", "js-lint": "success"},
+    "expected_returncode": 0
+  },
+  {
+    "name": "inactive_languages_are_skipped",
+    "results": {"detect": "success", "python-lint": "skipped", "markdown-lint": "skipped", "shell-lint": "skipped", "yaml-lint": "skipped", "rust-lint": "skipped", "js-lint": "skipped"},
+    "expected_returncode": 0
+  },
+  {
+    "name": "language_failure_fails_closed",
+    "results": {"detect": "success", "python-lint": "failure", "markdown-lint": "success", "shell-lint": "success", "yaml-lint": "success", "rust-lint": "success", "js-lint": "success"},
+    "expected_returncode": 1
+  },
+  {
+    "name": "language_cancellation_fails_closed",
+    "results": {"detect": "success", "python-lint": "success", "markdown-lint": "cancelled", "shell-lint": "success", "yaml-lint": "success", "rust-lint": "success", "js-lint": "success"},
+    "expected_returncode": 1
+  },
+  {
+    "name": "detector_failure_fails_closed",
+    "results": {"detect": "failure", "python-lint": "skipped", "markdown-lint": "skipped", "shell-lint": "skipped", "yaml-lint": "skipped", "rust-lint": "skipped", "js-lint": "skipped"},
+    "expected_returncode": 1
+  },
+  {
+    "name": "shell_failure_is_not_dropped",
+    "results": {"detect": "success", "python-lint": "success", "markdown-lint": "success", "shell-lint": "failure", "yaml-lint": "success", "rust-lint": "success", "js-lint": "success"},
+    "expected_returncode": 1
+  },
+  {
+    "name": "rust_failure_is_not_dropped",
+    "results": {"detect": "success", "python-lint": "success", "markdown-lint": "success", "shell-lint": "success", "yaml-lint": "success", "rust-lint": "failure", "js-lint": "success"},
+    "expected_returncode": 1
+  },
+  {
+    "name": "js_failure_is_not_dropped",
+    "results": {"detect": "success", "python-lint": "success", "markdown-lint": "success", "shell-lint": "success", "yaml-lint": "success", "rust-lint": "success", "js-lint": "failure"},
+    "expected_returncode": 1
+  },
+  {
+    "name": "unexpected_result_fails_closed",
+    "results": {"detect": "success", "python-lint": "success", "markdown-lint": "success", "shell-lint": "success", "yaml-lint": "success", "rust-lint": "success", "js-lint": "timed_out"},
+    "expected_returncode": 1
+  }
+]
