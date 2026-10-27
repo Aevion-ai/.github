@@ -165,7 +165,8 @@ jobs:
           JOB_WORKFLOW_REPOSITORY: ${{ job.workflow_repository }}
           JOB_WORKFLOW_SHA: ${{ job.workflow_sha }}
           JOB_WORKFLOW_REF: ${{ job.workflow_ref }}
-          GITHUB_SHA: ${{ github.sha }}
+          CALLER_REPOSITORY: ${{ github.repository }}
+          CALLER_SHA: ${{ github.sha }}
         run: |
           set -euo pipefail
           echo "job.workflow_repository=${JOB_WORKFLOW_REPOSITORY}"
@@ -179,8 +180,8 @@ jobs:
             echo "::error::job.workflow_sha must be a 40-character hex SHA, got ${JOB_WORKFLOW_SHA}"
             exit 1
           fi
-          if [ "${JOB_WORKFLOW_SHA}" = "${GITHUB_SHA}" ]; then
-            echo "::error::job.workflow_sha must not equal caller github.sha (${GITHUB_SHA})"
+          if [ "${CALLER_REPOSITORY}" != 'Aevion-ai/.github' ] && [ "${JOB_WORKFLOW_SHA}" = "${CALLER_SHA}" ]; then
+            echo "::error::job.workflow_sha must not equal caller github.sha (${CALLER_SHA})"
             exit 1
           fi
       - name: Checkout Aevion workflow kit
