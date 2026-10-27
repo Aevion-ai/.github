@@ -160,14 +160,11 @@ jobs:
       - name: Fetch pull request base
         if: github.event_name == 'pull_request'
         run: git fetch --no-tags origin "${{ github.event.pull_request.base.sha }}"
-      - name: Resolve reusable workflow git ref
-        id: aevion-github-ref
-        run: echo "ref=${GITHUB_WORKFLOW_REF#*@}" >> "$GITHUB_OUTPUT"
       - name: Checkout Aevion workflow kit
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
-          repository: Aevion-ai/.github
-          ref: ${{ steps.aevion-github-ref.outputs.ref }}
+          repository: ${{ job.workflow_repository }}
+          ref: ${{ job.workflow_sha }}
           path: _aevion_github
           sparse-checkout: |
             .github/actions/markdownlint-baseline-prep

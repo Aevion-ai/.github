@@ -8,12 +8,9 @@ source "${ROOT}/.github/actions/markdownlint-baseline-prep/markdownlint-baseline
 pass() { echo "PASS: $*"; }
 fail() { echo "FAIL: $*"; exit 1; }
 
-GITHUB_WORKFLOW_REF='Aevion-ai/.github/.github/workflows/aevion-lint.yml@refs/heads/cursor/opt-in-aevion-lint-baselines-ed8a'
-resolved_ref="${GITHUB_WORKFLOW_REF#*@}"
-if [ "${resolved_ref}" != 'refs/heads/cursor/opt-in-aevion-lint-baselines-ed8a' ]; then
-  fail "workflow ref suffix parse got ${resolved_ref}"
-fi
-pass 'GITHUB_WORKFLOW_REF suffix matches caller-pinned git ref'
+# Cross-repo kit checkout in aevion-lint.yml uses job.workflow_repository and
+# job.workflow_sha (the called reusable workflow), not github.workflow_ref (caller).
+echo "SKIP: job.workflow_* checkout identity is validated by AVA #377 workflow_call"
 
 tmpdir="$(mktemp -d)"
 trap 'rm -rf "${tmpdir}"' EXIT
