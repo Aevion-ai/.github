@@ -160,15 +160,28 @@ jobs:
       - name: Fetch pull request base
         if: github.event_name == 'pull_request'
         run: git fetch --no-tags origin "${{ github.event.pull_request.base.sha }}"
-      - name: Run markdownlint baseline gate
-        uses: ./.github/actions/markdownlint-baseline-prep
+      - name: Resolve reusable workflow git ref
+        id: aevion-github-ref
+        run: echo "ref=${GITHUB_WORKFLOW_REF#*@}" >> "$GITHUB_OUTPUT"
+      - name: Checkout Aevion workflow kit
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
-          markdownlint-baseline-path: ${{ inputs.markdownlint-baseline-path }}
-          markdownlint-gate-script: ${{ inputs.markdownlint-gate-script }}
-          markdownlint-config: ${{ inputs.markdownlint-config }}
-          github-event-name: ${{ github.event_name }}
-          github-event-before: ${{ github.event.before }}
-          github-pr-base-sha: ${{ github.event.pull_request.base.sha }}
+          repository: Aevion-ai/.github
+          ref: ${{ steps.aevion-github-ref.outputs.ref }}
+          path: _aevion_github
+          sparse-checkout: |
+            .github/actions/markdownlint-baseline-prep
+          sparse-checkout-cone-mode: false
+      - name: Run markdownlint baseline gate
+        env:
+          GITHUB_ACTION_PATH: ${{ github.workspace }}/_aevion_github/.github/actions/markdownlint-baseline-prep
+          MARKDOWNLINT_BASELINE_PATH: ${{ inputs.markdownlint-baseline-path }}
+          MARKDOWNLINT_GATE_SCRIPT: ${{ inputs.markdownlint-gate-script }}
+          MARKDOWNLINT_CONFIG: ${{ inputs.markdownlint-config }}
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+          GITHUB_EVENT_BEFORE: ${{ github.event.before }}
+          GITHUB_PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: bash "${GITHUB_ACTION_PATH}/run.sh"
 
   shell-lint:
     name: Shell lint

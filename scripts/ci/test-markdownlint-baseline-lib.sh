@@ -8,6 +8,13 @@ source "${ROOT}/.github/actions/markdownlint-baseline-prep/markdownlint-baseline
 pass() { echo "PASS: $*"; }
 fail() { echo "FAIL: $*"; exit 1; }
 
+GITHUB_WORKFLOW_REF='Aevion-ai/.github/.github/workflows/aevion-lint.yml@refs/heads/cursor/opt-in-aevion-lint-baselines-ed8a'
+resolved_ref="${GITHUB_WORKFLOW_REF#*@}"
+if [ "${resolved_ref}" != 'refs/heads/cursor/opt-in-aevion-lint-baselines-ed8a' ]; then
+  fail "workflow ref suffix parse got ${resolved_ref}"
+fi
+pass 'GITHUB_WORKFLOW_REF suffix matches caller-pinned git ref'
+
 tmpdir="$(mktemp -d)"
 trap 'rm -rf "${tmpdir}"' EXIT
 
@@ -69,5 +76,11 @@ if [ "${unexpected_rc}" -eq 0 ]; then
   fail 'unexpected markdownlint exit code must fail'
 fi
 pass 'markdownlint exit codes other than 0 or 1 fail normalization'
+
+ROOT_ACTION="${ROOT}/.github/actions/markdownlint-baseline-prep"
+if [ ! -x "${ROOT_ACTION}/run.sh" ]; then
+  fail 'run.sh must exist for cross-repo baseline checkout'
+fi
+pass 'baseline prep run.sh present at pinned workflow kit path'
 
 echo "All markdownlint-baseline-lib tests passed."
