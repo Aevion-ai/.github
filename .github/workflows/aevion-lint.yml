@@ -160,6 +160,20 @@ jobs:
       - name: Fetch pull request base
         if: github.event_name == 'pull_request'
         run: git fetch --no-tags origin "${{ github.event.pull_request.base.sha }}"
+      - name: Log reusable workflow identity
+        env:
+          JOB_WORKFLOW_REPOSITORY: ${{ job.workflow_repository }}
+          JOB_WORKFLOW_SHA: ${{ job.workflow_sha }}
+          JOB_WORKFLOW_REF: ${{ job.workflow_ref }}
+        run: |
+          set -euo pipefail
+          if [ -z "${JOB_WORKFLOW_REPOSITORY}" ] || [ -z "${JOB_WORKFLOW_SHA}" ]; then
+            echo "::error::job.workflow_repository and job.workflow_sha must be set for cross-repo baseline checkout"
+            exit 1
+          fi
+          echo "job.workflow_repository=${JOB_WORKFLOW_REPOSITORY}"
+          echo "job.workflow_sha=${JOB_WORKFLOW_SHA}"
+          echo "job.workflow_ref=${JOB_WORKFLOW_REF}"
       - name: Checkout Aevion workflow kit
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
