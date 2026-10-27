@@ -103,9 +103,11 @@ jobs:
       - name: Run ruff
         run: ruff check .
       - name: Run bandit
+        env:
+          BANDIT_BASELINE_PATH: ${{ inputs.bandit-baseline-path }}
         run: |
-          if [ -n "${{ inputs.bandit-baseline-path }}" ]; then
-            bandit -r . --skip B101 -b "${{ inputs.bandit-baseline-path }}"
+          if [ -n "${BANDIT_BASELINE_PATH}" ]; then
+            bandit -r . --skip B101 -b "${BANDIT_BASELINE_PATH}"
           else
             bandit -r . --skip B101
           fi
@@ -159,52 +161,14 @@ jobs:
         if: github.event_name == 'pull_request'
         run: git fetch --no-tags origin "${{ github.event.pull_request.base.sha }}"
       - name: Run markdownlint baseline gate
-        env:
-          MARKDOWNLINT_BASELINE_PATH: ${{ inputs.markdownlint-baseline-path }}
-          MARKDOWNLINT_GATE_SCRIPT: ${{ inputs.markdownlint-gate-script }}
-          MARKDOWNLINT_CONFIG: ${{ inputs.markdownlint-config }}
-          GITHUB_EVENT_NAME: ${{ github.event_name }}
-          GITHUB_EVENT_BEFORE: ${{ github.event.before }}
-          GITHUB_PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
-        run: |
-          set -euo pipefail
-          if [ "${GITHUB_EVENT_NAME}" = "pull_request" ]; then
-            base="${GITHUB_PR_BASE_SHA}"
-          else
-            base="${GITHUB_EVENT_BEFORE}"
-            if [ -z "${base}" ] || [ "${base}" = "0000000000000000000000000000000000000000" ]; then
-              base="$(git rev-parse HEAD^ 2>/dev/null || git rev-parse HEAD)"
-            fi
-          fi
-          mapfile -t changed_md < <(git diff --name-only --diff-filter=ACMR "${base}" HEAD -- '*.md')
-          if [ "${#changed_md[@]}" -eq 0 ]; then
-            echo "No changed Markdown files to lint."
-            exit 0
-          fi
-          config_args=()
-          if [ -f "${MARKDOWNLINT_CONFIG}" ]; then
-            config_args+=(--config "${MARKDOWNLINT_CONFIG}")
-          fi
-          findings="$(mktemp)"
-          set +e
-          markdownlint "${changed_md[@]}" "${config_args[@]}" --json --output "${findings}"
-          markdownlint_status=$?
-          set -e
-          echo "markdownlint exit status: ${markdownlint_status}"
-          if [ "${markdownlint_status}" -ne 0 ] && [ "${markdownlint_status}" -ne 1 ]; then
-            echo "::error::markdownlint failed with unexpected exit status ${markdownlint_status}"
-            exit "${markdownlint_status}"
-          fi
-          if [ -z "${MARKDOWNLINT_GATE_SCRIPT}" ]; then
-            echo "::error::markdownlint-gate-script is required when markdownlint-baseline-enabled is true"
-            exit 1
-          fi
-          if [ ! -f "${MARKDOWNLINT_GATE_SCRIPT}" ]; then
-            echo "::error::markdownlint gate script not found: ${MARKDOWNLINT_GATE_SCRIPT}"
-            exit 1
-          fi
-          chmod +x "${MARKDOWNLINT_GATE_SCRIPT}"
-          "${MARKDOWNLINT_GATE_SCRIPT}" "${MARKDOWNLINT_BASELINE_PATH}" "${findings}"
+        uses: ./.github/actions/markdownlint-baseline-prep
+        with:
+          markdownlint-baseline-path: ${{ inputs.markdownlint-baseline-path }}
+          markdownlint-gate-script: ${{ inputs.markdownlint-gate-script }}
+          markdownlint-config: ${{ inputs.markdownlint-config }}
+          github-event-name: ${{ github.event_name }}
+          github-event-before: ${{ github.event.before }}
+          github-pr-base-sha: ${{ github.event.pull_request.base.sha }}
 
   shell-lint:
     name: Shell lint
@@ -291,18 +255,21 @@ jobs:
         with:
           python-version: ${{ inputs.python-version }}
       - name: Install pytest dependencies
+        env:
+          PYTEST_EXTRA_PACKAGES: ${{ inputs.pytest-extra-packages }}
         run: |
           pip install pytest
-          if [ -n "${{ inputs.pytest-extra-packages }}" ]; then
+          if [ -n "${PYTEST_EXTRA_PACKAGES}" ]; then
             # shellcheck disable=SC2086
-            pip install ${{ inputs.pytest-extra-packages }}
+            pip install ${PYTEST_EXTRA_PACKAGES}
           fi
       - name: Run pytest
         env:
           PYTHONPATH: ${{ inputs.pytest-pythonpath }}
+          PYTEST_PATHS: ${{ inputs.pytest-paths }}
         run: |
           # shellcheck disable=SC2086
-          pytest ${{ inputs.pytest-paths }}
+          pytest ${PYTEST_PATHS}
 
   all-clear:
     name: All lint jobs passed
