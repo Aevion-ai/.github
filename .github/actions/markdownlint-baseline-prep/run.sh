@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # shellcheck source=markdownlint-baseline-lib.sh
-source "${GITHUB_ACTION_PATH}/markdownlint-baseline-lib.sh"
+source "${AEVION_KIT_PATH}/markdownlint-baseline-lib.sh"
 
 if [ "${GITHUB_EVENT_NAME}" = "pull_request" ]; then
   base="${GITHUB_PR_BASE_SHA}"

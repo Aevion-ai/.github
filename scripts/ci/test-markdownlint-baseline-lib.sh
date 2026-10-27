@@ -74,8 +74,8 @@ if [ "${unexpected_rc}" -eq 0 ]; then
 fi
 pass 'markdownlint exit codes other than 0 or 1 fail normalization'
 
-ROOT_ACTION="${ROOT}/.github/actions/markdownlint-baseline-prep"
-if [ ! -x "${ROOT_ACTION}/run.sh" ]; then
+AEVION_KIT_PATH="${ROOT}/.github/actions/markdownlint-baseline-prep"
+if [ ! -x "${AEVION_KIT_PATH}/run.sh" ]; then
   fail 'run.sh must exist for cross-repo baseline checkout'
 fi
 pass 'baseline prep run.sh present at pinned workflow kit path'

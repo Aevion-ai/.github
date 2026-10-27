@@ -194,14 +194,14 @@ jobs:
           sparse-checkout-cone-mode: false
       - name: Run markdownlint baseline gate
         env:
-          GITHUB_ACTION_PATH: ${{ github.workspace }}/_aevion_github/.github/actions/markdownlint-baseline-prep
+          AEVION_KIT_PATH: ${{ github.workspace }}/_aevion_github/.github/actions/markdownlint-baseline-prep
           MARKDOWNLINT_BASELINE_PATH: ${{ inputs.markdownlint-baseline-path }}
           MARKDOWNLINT_GATE_SCRIPT: ${{ inputs.markdownlint-gate-script }}
           MARKDOWNLINT_CONFIG: ${{ inputs.markdownlint-config }}
           GITHUB_EVENT_NAME: ${{ github.event_name }}
           GITHUB_EVENT_BEFORE: ${{ github.event.before }}
           GITHUB_PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
-        run: bash "${GITHUB_ACTION_PATH}/run.sh"
+        run: bash "${AEVION_KIT_PATH}/run.sh"
 
   shell-lint:
     name: Shell lint
