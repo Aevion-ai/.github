@@ -11,6 +11,42 @@ on:
         description: 'Path to markdownlint config file'
         type: string
         default: '.markdownlint.json'
+      markdownlint-baseline-enabled:
+        description: 'Opt in: lint changed Markdown only and gate new findings against a baseline'
+        type: boolean
+        default: false
+      markdownlint-gate-script:
+        description: 'Repository-relative script that fails only on new markdownlint findings vs the baseline'
+        type: string
+        default: ''
+      markdownlint-baseline-path:
+        description: 'Path to committed markdownlint baseline JSON consumed by the gate script'
+        type: string
+        default: ''
+      markdownlint-cli-version:
+        description: 'Optional markdownlint-cli npm version (e.g. 0.43.0); empty installs latest as today'
+        type: string
+        default: ''
+      bandit-baseline-path:
+        description: 'Opt in: bandit -b baseline JSON path; empty runs bandit without a baseline file'
+        type: string
+        default: ''
+      pytest-paths:
+        description: 'Opt in: pytest path arguments; empty skips the pytest job'
+        type: string
+        default: ''
+      pytest-pythonpath:
+        description: 'PYTHONPATH for the optional pytest job'
+        type: string
+        default: ''
+      pytest-extra-packages:
+        description: 'Extra pip packages for the optional pytest job (space-separated)'
+        type: string
+        default: ''
+      strict-all-clear:
+        description: 'Opt in: all-clear fails when any needed job failed or was cancelled'
+        type: boolean
+        default: false
 
 jobs:
   detect:
@@ -67,12 +103,19 @@ jobs:
       - name: Run ruff
         run: ruff check .
       - name: Run bandit
-        run: bandit -r . --skip B101
+        env:
+          BANDIT_BASELINE_PATH: ${{ inputs.bandit-baseline-path }}
+        run: |
+          if [ -n "${BANDIT_BASELINE_PATH}" ]; then
+            bandit -r . --skip B101 -b "${BANDIT_BASELINE_PATH}"
+          else
+            bandit -r . --skip B101
+          fi
 
   markdown-lint:
     name: Markdown lint
     needs: detect
-    if: needs.detect.outputs.markdown == 'true'
+    if: needs.detect.outputs.markdown == 'true' && inputs.markdownlint-baseline-enabled != true
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -90,6 +133,76 @@ jobs:
           else
             markdownlint '**/*.md'
           fi
+
+  markdown-lint-baseline:
+    name: Markdown lint (baseline gate)
+    needs: detect
+    if: needs.detect.outputs.markdown == 'true' && inputs.markdownlint-baseline-enabled == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+      - name: Set up Node
+        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
+        with:
+          node-version: '20'
+      - name: Install markdownlint-cli
+        env:
+          MARKDOWNLINT_CLI_VERSION: ${{ inputs.markdownlint-cli-version }}
+        run: |
+          if [ -n "${MARKDOWNLINT_CLI_VERSION}" ]; then
+            npm install -g "markdownlint-cli@${MARKDOWNLINT_CLI_VERSION}"
+          else
+            npm install -g markdownlint-cli
+          fi
+      - name: Fetch pull request base
+        if: github.event_name == 'pull_request'
+        run: git fetch --no-tags origin "${{ github.event.pull_request.base.sha }}"
+      - name: Log reusable workflow identity
+        env:
+          JOB_WORKFLOW_REPOSITORY: ${{ job.workflow_repository }}
+          JOB_WORKFLOW_SHA: ${{ job.workflow_sha }}
+          JOB_WORKFLOW_REF: ${{ job.workflow_ref }}
+          CALLER_REPOSITORY: ${{ github.repository }}
+          CALLER_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          echo "job.workflow_repository=${JOB_WORKFLOW_REPOSITORY}"
+          echo "job.workflow_sha=${JOB_WORKFLOW_SHA}"
+          echo "job.workflow_ref=${JOB_WORKFLOW_REF}"
+          if [ "${JOB_WORKFLOW_REPOSITORY}" != 'Aevion-ai/.github' ]; then
+            echo "::error::job.workflow_repository must be Aevion-ai/.github, got ${JOB_WORKFLOW_REPOSITORY}"
+            exit 1
+          fi
+          if ! [[ "${JOB_WORKFLOW_SHA}" =~ ^[0-9a-fA-F]{40}$ ]]; then
+            echo "::error::job.workflow_sha must be a 40-character hex SHA, got ${JOB_WORKFLOW_SHA}"
+            exit 1
+          fi
+          if [ "${CALLER_REPOSITORY}" != 'Aevion-ai/.github' ] && [ "${JOB_WORKFLOW_SHA}" = "${CALLER_SHA}" ]; then
+            echo "::error::job.workflow_sha must not equal caller github.sha (${CALLER_SHA})"
+            exit 1
+          fi
+      - name: Checkout Aevion workflow kit
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: ${{ job.workflow_repository }}
+          ref: ${{ job.workflow_sha }}
+          path: _aevion_github
+          sparse-checkout: |
+            .github/actions/markdownlint-baseline-prep
+          sparse-checkout-cone-mode: false
+      - name: Run markdownlint baseline gate
+        env:
+          AEVION_KIT_PATH: ${{ github.workspace }}/_aevion_github/.github/actions/markdownlint-baseline-prep
+          MARKDOWNLINT_BASELINE_PATH: ${{ inputs.markdownlint-baseline-path }}
+          MARKDOWNLINT_GATE_SCRIPT: ${{ inputs.markdownlint-gate-script }}
+          MARKDOWNLINT_CONFIG: ${{ inputs.markdownlint-config }}
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+          GITHUB_EVENT_BEFORE: ${{ github.event.before }}
+          GITHUB_PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: bash "${AEVION_KIT_PATH}/run.sh"
 
   shell-lint:
     name: Shell lint
@@ -163,18 +276,86 @@ jobs:
         if: steps.eslint-config.outputs.exists == 'true'
         run: npx eslint . --ext .js,.jsx,.ts,.tsx
 
+  pytest:
+    name: Pytest
+    needs: detect
+    if: needs.detect.outputs.python == 'true' && inputs.pytest-paths != ''
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Set up Python
+        uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b # v5.3.0
+        with:
+          python-version: ${{ inputs.python-version }}
+      - name: Install pytest dependencies
+        env:
+          PYTEST_EXTRA_PACKAGES: ${{ inputs.pytest-extra-packages }}
+        run: |
+          pip install pytest
+          if [ -n "${PYTEST_EXTRA_PACKAGES}" ]; then
+            # shellcheck disable=SC2086
+            pip install ${PYTEST_EXTRA_PACKAGES}
+          fi
+      - name: Run pytest
+        env:
+          PYTHONPATH: ${{ inputs.pytest-pythonpath }}
+          PYTEST_PATHS: ${{ inputs.pytest-paths }}
+        run: |
+          # shellcheck disable=SC2086
+          pytest ${PYTEST_PATHS}
+
   all-clear:
     name: All lint jobs passed
     needs:
       - detect
       - python-lint
       - markdown-lint
+      - markdown-lint-baseline
       - shell-lint
       - yaml-lint
       - rust-lint
       - js-lint
+      - pytest
     if: always()
     runs-on: ubuntu-latest
     steps:
       - name: Report status
+        if: inputs.strict-all-clear != true
         run: echo "All lint jobs passed"
+      - name: Evaluate needed job results
+        if: inputs.strict-all-clear == true
+        run: |
+          set -euo pipefail
+          failed=0
+          check() {
+            local name="$1"
+            local result="$2"
+            echo "${name}=${result}"
+            case "${result}" in
+              success|skipped)
+                ;;
+              *)
+                echo "::error::Lint gate failed: ${name} result=${result}"
+                failed=1
+                ;;
+            esac
+          }
+          check detect "${{ needs.detect.result }}"
+          check python-lint "${{ needs.python-lint.result }}"
+          check markdown-lint "${{ needs.markdown-lint.result }}"
+          check markdown-lint-baseline "${{ needs.markdown-lint-baseline.result }}"
+          check shell-lint "${{ needs.shell-lint.result }}"
+          check yaml-lint "${{ needs.yaml-lint.result }}"
+          check rust-lint "${{ needs.rust-lint.result }}"
+          check js-lint "${{ needs.js-lint.result }}"
+          check pytest "${{ needs.pytest.result }}"
+          if [ "${failed}" -ne 0 ]; then
+            echo "One or more lint jobs failed or were cancelled (skipped is allowed)."
+            exit 1
+          fi
+          if [ "${{ needs.detect.result }}" != "success" ]; then
+            echo "detect must succeed; got ${{ needs.detect.result }}"
+            exit 1
+          fi
+          echo "All lint jobs passed (or were correctly skipped)."
