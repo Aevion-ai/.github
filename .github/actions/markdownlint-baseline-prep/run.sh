@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# shellcheck source=markdownlint-baseline-lib.sh
+# shellcheck source-path=SCRIPTDIR source=markdownlint-baseline-lib.sh
 source "${AEVION_KIT_PATH}/markdownlint-baseline-lib.sh"
 
 if [ "${GITHUB_EVENT_NAME}" = "pull_request" ]; then
